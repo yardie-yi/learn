@@ -21,6 +21,14 @@ struct fds
     int sockfd;
 };
 
+void reset_oneshot(int epollfd, int fd)
+{
+    struct epoll_event event;
+    event.data.fd = fd;
+    event.events = EPOLLIN|EPOLLET|EPOLLONESHOT;
+    epoll_ctl(epollfd, EPOLL_CTL_MOD, fd, &event);
+}
+
 int setnonblocking(int fd)
 {
     int old_option = fcntl(fd, F_GETFL);
@@ -61,6 +69,7 @@ void *worker(void *arg)
         {
             if (errno == EAGAIN)
             {
+                reset_oneshot(all_fd->epollfd, all_fd->sockfd);
                 printf("read data latter");
                 break;
             }
