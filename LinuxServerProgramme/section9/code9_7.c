@@ -1,4 +1,4 @@
-#define_GNU_SOURCE 1
+#define _GNU_SOURCE 1
 #include<sys/types.h>
 #include<sys/socket.h>
 #include<netinet/in.h>
@@ -17,7 +17,7 @@
 
 struct client_data
 {
-    sockaddr_in address;
+    struct sockaddr_in address;
     char *write_buf;
     char buf[BUFFER_SIZE];
 };
@@ -40,7 +40,7 @@ int main(int argc, char **argv)
     }
     const char *ip = argv[1];
     int port = atoi(argv[0]);
-    int soc_fd = socket(AF_TNET, SOCK_STREAM, 0);
+    int soc_fd = socket(AF_INET, SOCK_STREAM, 0);
     struct sockaddr_in soc_address;
     soc_address.sin_family = AF_INET;
     soc_address.sin_port = htons(port);
@@ -52,8 +52,8 @@ int main(int argc, char **argv)
         return -1;
     }
     listen(soc_fd, 5);
-    client_data *users = new client_data[FD_LIMIT];
-    pollfd fds[USER_LIMIT + 1];
+    struct client_data *users =(struct client_data *)malloc(FD_LIMIT*sizeof(struct client_data));
+    struct pollfd fds[USER_LIMIT + 1];
     int user_counter = 0;
     for(int i = 1; i <= USER_LIMIT; ++i)
     {
@@ -95,8 +95,80 @@ int main(int argc, char **argv)
                 users[connfd].address = accept_address;
                 setnonblocking(connfd);
                 fds[user_counter].fd = connfd;
+                fds[user_counter].events = POLLIN|POLLRDHUP|POLLERR;
+                fds[user_counter].revents = 0;
+                printf("comes a new user, now have %d users\n", user_counter);
+            }
+            else if (fds[i].revents & POLLERR)
+            {
+                printf("get an error from %d\n", fds[i].fd);
+                char errors[100];
+                memset(errors, '\0', 100);
+                socklen_t length = sizeof(errors);
+                if (getsockopt(fds[i].fd, SOL_SOCKET, SO_ERROR, &errors, &length) < 0)
+                {
+                    printf("get socket option failed\n");
+                }
+                continue;
+            }
+            else if (fds[i].revents & POLLRDHUP)
+            {
+                users[fds[i].fd] = users[fds[user_counter].fd];
+                close(fds[i].fd);
+                fds[i] = fds[user_counter];
+                i--;
+                user_counter--;
+                printf("a client left\n");
+            }
+            else if(fds[i].revents & POLLIN)
+            {
+                int connfd = fds[i].fd;
+                memset(users[connfd].buf, '\0', BUFFER_SIZE);
+                ret = recv(connfd, users[connfd].buf, BUFFER_SIZE - 1, 0);
+                if (ret < 0)
+                {
+                    if (errno != EAGAIN)
+                    {
+                        close(connfd);
+                        users[fds[i].fd] = users[fds[user_counter].fd];
+                        fds[i] = fds[user_counter];
+                        i--;
+                        user_counter--;
+                    }
+                }
+                else if (ret == 0)
+                {
+
+                }
+                else
+                {
+                    for (int j = 1; j <= user_counter; j++)
+                    {
+                        if (fds[j].fd == connfd)
+                        {
+                            continue;
+                        }
+                        fds[j].events |= ~POLLIN;
+                        fds[j].events |= POLLOUT;
+                        users[fds[j].fd].write_buf = users[connfd].buf;
+                    }
+                }
+            }
+            else if (fds[i].revents & POLLOUT)
+            {
+                int connfd = fds[i].fd;
+                if (!users[connfd].write_buf)
+                {
+                    continue;
+                }
+                ret = send(connfd, users[connfd].write_buf, strlen(users[connfd].write_buf),0);
+                users[connfd].write_buf = NULL;
+                fds[i].events |= ~POLLOUT;
+                fds[i].events |= POLLIN;
             }
         }
     }
-
+    free(users);
+    close(soc_fd);
+    return 0;
 }
