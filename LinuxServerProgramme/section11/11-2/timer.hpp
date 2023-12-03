@@ -33,7 +33,7 @@ public:
     util_timer():prev(NULL),next(NULL) {}
 public:
     time_t expire;
-    void *(cb_func)(client_data*);
+    void (*cb_func)(client_data*);
     client_data *user_data;
     util_timer *prev;
     util_timer *next;

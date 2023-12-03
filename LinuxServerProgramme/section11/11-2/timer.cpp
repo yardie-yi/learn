@@ -5,7 +5,7 @@
 #define TIMESLOT 5
 
 static int pipefd[2];
-static sort_timeer_lst timer_lst;
+static sort_timer_lst timer_lst;
 static int epollfd = 0;
 
 
@@ -50,6 +50,12 @@ void cb_func(client_data *user_data)
     assert(user_data);
     close(user_data->sockfd);
     printf("close fd %d\n", user_data->sockfd);
+}
+
+void timer_handler()
+{
+    timer_lst.tick();
+    alarm(TIMESLOT);
 }
 
 int main(int argc, char *argv[])
