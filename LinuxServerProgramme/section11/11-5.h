@@ -115,7 +115,45 @@ public:
         tw_timer *tmp = slots[cur_slot];
         while(tmp)
         {
-            
+            printf("tick the timer once\n");
+            if (tmp->rotation > 0)
+            {
+                tmp->rotation--;
+                tmp = tmp->next;
+            }
+            else
+            {
+                tmp->cb_func(tmp->user_data);
+                if(tmp==slots[cur_slot])
+                {
+                    printf("delete header in cur_clot");
+                    slots[cur_slot] = tmp->next;
+                    delete tmp;
+                    if(slots[cur_slot])
+                    {
+                        slots[cur_slot]->prev = NULL;
+                    }
+                    tmp = slots[cur_slot];
+                }
+                else
+                {
+                    tmp->prev->next = tmp->next;
+                    if(tmp->next)
+                    {
+                        tmp->next->prev = tmp->prev;
+                    }
+                    tw_timer *tmp2 = tmp->next;
+                    delete tmp;
+                    tmp = tmp2;
+                }
+            }
         }
+        cur_slot=++cur_slot%N;
     }
-}
+private:
+    static const int N = 60;
+    static const int SI = 1;
+    tw_timer *slots[N];
+    int cur_slot;
+};
+#endif
