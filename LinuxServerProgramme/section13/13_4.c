@@ -93,7 +93,125 @@ void del_resource()
     delete[] sub_process;
 }
 
+void child_term_handler(int sig)
+{
+    stop_child = true;
+}
+
+int run_child(int idx, client_data *users, char *share_mem)
+{
+    epoll_event events[MAX_EVENT_NUMBER];
+    int child_epollfd = epoll_create(5);
+    assert(child_epollfd != -1);
+    int connfd = users[idx].connfd;
+    addfd(child_epollfd, connfd);
+    int pipefd = users[idx].pipefd[1];
+    addfd(child_epollfd, pipefd);
+    int ret;
+    addsig(SIGTERM, child_term_handler, false);
+    while(!stop_child)
+    {
+        int number = epoll_wait(child_epollfd, events, MAX_EVENT_NUMBER, -1);
+        if (number < 0 && errno != EINTR)
+        {
+            printf("epoll failure\n");
+            break;
+        }
+        for(int i = 0; i < number; i++)
+        {
+            int sockfd = events[i].data.fd;
+            if ((sockfd == connfd) && (events[i].events & EPOLLIN))
+            {
+                memset(share_mem+idx*BUFFER_SIZE, '\0', BUFFER_SIZE);
+                ret = recv(connfd, share_mem+idx*BUFFER_SIZE, BUFFER_SIZE-1, 0);
+                if (ret < 0)
+                {
+                    if(errno != EAGAIN)
+                    {
+                        stop_child = true;
+                    }
+                }
+                else if (ret == 0)
+                {
+                    stop_child = true;
+                }
+                else
+                {
+                    send(pipefd, (char*)&idx, sizeof(idx), 0);
+                }
+            }
+            else if ((sockfd == pipefd) && (events[i].events & EPOLLIN)) 
+            {
+                int client = 0;
+                ret = recv(sockfd, (char *)&client, sizeof(client), 0);
+                if (ret < 0)
+                {
+                    if(errno != EAGAIN)
+                    {
+                        stop_child = true;
+                    }
+                }
+                else if (ret == 0)
+                {
+                    stop_child = true;
+                }
+                else
+                {
+                    send(connfd, share_mem + client*BUFFER_SIZE,BUFFER_SIZE, 0);
+                }
+            }
+            else
+            {
+                continue;
+            }
+        }
+    }
+    close(connfd);
+    close(pipefd);
+    close(child_epollfd);
+    return 0;
+}
+
 int main(int argc, char **argv)
 {
-    
+    if (argc < 3)
+    {
+        printf("usage: %s ip address port number\n", basename(argv[0]));
+        return 1;
+    }
+    const char *ip = argv[1];
+    int port = atoi(argv[2]);
+    int ret = 0;
+    struct sockaddr_in address;
+    address.sin_family = AF_INET;
+    address.sin_port = htons(port);
+    inet_pton(AF_INET, ip, &address.sin_addr);
+    listenfd = socket(PF_INET, SOCK_STREAM, 0);
+    assert(listenfd >= 0);
+    ret = bind(listenfd, (struct sockaddr *)&address,sizeof(address));
+    assert(ret != -1);
+    ret = listen(listenfd, 5);
+    assert(ret != -1);
+    user_count = 0;
+    users = new client_data[USER_LIMIT + 1];
+    sub_process = new int[PROCESS_LIMIT];
+    for (int i = 0; i < PROCESS_LIMIT; i++)
+    {
+        sub_process[i] = -1;
+    }
+    epoll_event events[MAX_EVENT_NUMBER];
+    epollfd = epoll_create(5);
+    assert(epollfd != -1);
+    addfd(epollfd, listenfd);
+    ret = socketpair(PF_UNIX, SOCK_STREAM, 0, sig_pipefd);
+    assert(ret != -1);
+    setnonblocking(sig_pipefd[1]);
+    addfd(epollfd, sig_pipefd[0]);
+    addsig(SIGCHLD, sig_handler);
+    addsig(SIGTERM, sig_handler);
+    addsig(SIGINT, sig_handler);
+    signal(SIGPIPE, SIG_IGN);
+    bool stop_server = false;
+
+
 }
