@@ -212,6 +212,165 @@ int main(int argc, char **argv)
     addsig(SIGINT, sig_handler);
     signal(SIGPIPE, SIG_IGN);
     bool stop_server = false;
-
-
+    bool terminate = false;
+    shmfd = shm_open(shm_name, O_CREAT|O_RDWR, 0666);
+    assert(shmfd != -1);
+    ret = ftruncate(shmfd, USER_LIMIT * BUFFER_SIZE);
+    assert(ret != -1);
+    share_mem = (cahr *)mmap(NULL, USER_LIMIT * BUFFER_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, shmfd, 0);
+    assert(share_mem != MAP_FAILED);
+    close(shmfd);
+    while(!stop_server)
+    {
+        int number = epoll_wait(epollfd, events, MAX_EVENT_NUMBER, -1);
+        if (number < 0 && errno != EINTR)
+        {
+            printf("epoll failer\n");
+            break;
+        }
+        for(int i = 0; i < number; i++)
+        {
+            int sockfd = events[i].data.fd;
+            if (sockfd == listenfd)
+            {
+                struct sockaddr_in client_address;
+                socklen_t client_addrlength = sizeof(client_address);
+                int connfd = accept(listen, (struct sockaddr *)&client_address, &client_addrlength);
+                if (connfd < 0)
+                {
+                    printf("errno is %d\n", errno);
+                    continue;
+                }
+                if (user_count >= USER_LIMIT)
+                {
+                    const char *info = "too many users\n";
+                    printf("%s", info);
+                    send(connfd, info, strlen(info), 0);
+                    close(connfd);
+                    continue;
+                }
+                users[user_count].address = client_address;
+                users[user_count].connfd = connfd;
+                ret = socketpair(PF_UNIX, SOCK_STREAM, 0, users[user_count].pipefd);
+                assert(ret != -1);
+                pid_t pid = fork();
+                if (pid < 0)
+                {
+                    close(connfd);
+                    continue;
+                }
+                eles if(pid == 0) 
+                {
+                    close(epollfd);
+                    close(listenfd);
+                    close(users[user_count].pipefd[0]);
+                    close(sig_pipefd[0]);
+                    close(sig_pipefd[1]);
+                    run_child(user_count, users, share_mem);
+                    munmap((void*)share_mem, USER_LIMIT * BUFFER_SIZE);
+                    exit(0);
+                }
+                else
+                {
+                    close(connfd);
+                    close(users[user_count].pipefd[1]);
+                    addfd(epollfd, users[user_count].pipefd[0]);
+                    users[user_count].pid = pid;
+                    sub_process[pid] = user_count;
+                    user_count ++;
+                }
+            }
+            else if (sockfd = sig_pipefd[0] && events[i].events & EPOLLIN)
+            {
+                int sig;
+                char signals[1024];
+                ret = recv(sig_pipefd[0], signals, sizeof(signals), 0);
+                if (ret == -1)
+                {
+                    continue;
+                }
+                else if (ret == 0)
+                {
+                    continue;
+                }
+                else
+                {
+                    for(int i = 0; i < ret; i++)
+                    {
+                        switch (signals[i]) 
+                        {
+                            case SIGCHLD:
+                            {
+                                pid_t pid;
+                                int stat;
+                                while((pid=waitpid(-1, &stat, WNOHANG))>0)
+                                {
+                                    int del_user = sub_process[pid];
+                                    sub_process[pid] = -1;
+                                    if (del_user < 0 || del_user > USER_LIMIT)
+                                    {
+                                        continue;
+                                    }
+                                    epoll_ctl(epollfd, EPOLL_CTL_DEL, users[del_user].pipefd[0], 0);
+                                    close(users[del_user].pipefd[0]);
+                                    users[del_user] = users[--user_count];
+                                    sub_process[users[del_user].pid] = del_user;
+                                }
+                                if (terminate && user_count == 0)
+                                {
+                                    stop_server = true;
+                                }
+                                break;
+                            }
+                            case SIGTERM:
+                            case SIGINT:
+                            {
+                                printf("kill all thhe chile now\n");
+                                if (user_count == 0)
+                                {
+                                    stop_server = true;
+                                    break;
+                                }
+                                for (int i = 0; i < user_count; i++)
+                                {
+                                    int pid = users[i].pid;
+                                    kill(pid, SIGTERM);
+                                }
+                                terminate = true;
+                                break;
+                            }
+                            default:
+                            {
+                                break;
+                            }
+                        }
+                    }
+                }
+                else if(events[i].events & EPOLLIN)
+                {
+                    int child = 0;
+                    int recv(socfd, (char *)&child, sizeof(child), 0);
+                    printf("read data from child accros pippe \n");
+                    if(ret == -1)
+                    {
+                        continue;
+                    }
+                    else if(ret == 0)
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        for(int j = 0; j < user_count; j++)
+                        {
+                            printf("send data to child accross pipe\n");
+                            send(users[j].pipefd[0],(char *)&child, sizeof(child), 0);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    del_resource();
+    return 0;
 }
