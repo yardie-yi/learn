@@ -1,0 +1,1 @@
+/usr/bin/c++ -rdynamic CMakeFiles/learn.dir/src/test.cpp.o -o learn   -L/home/yardie/Desktop/learn/openGL/project/learn/../../3th/glfw/lib  -L/home/yardie/Desktop/learn/openGL/project/learn/../../3th/glew/lib64  -Wl,-rpath,/home/yardie/Desktop/learn/openGL/project/learn/../../3th/glfw/lib:/home/yardie/Desktop/learn/openGL/project/learn/../../3th/glew/lib64 -lglfw3 -lGLEW -lGL 

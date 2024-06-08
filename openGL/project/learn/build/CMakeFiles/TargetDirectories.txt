@@ -1,0 +1,3 @@
+/home/yardie/Desktop/learn/openGL/project/learn/build/CMakeFiles/learn.dir
+/home/yardie/Desktop/learn/openGL/project/learn/build/CMakeFiles/edit_cache.dir
+/home/yardie/Desktop/learn/openGL/project/learn/build/CMakeFiles/rebuild_cache.dir
