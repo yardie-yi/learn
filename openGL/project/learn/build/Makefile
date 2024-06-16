@@ -129,6 +129,30 @@ learn/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/learn.dir/build.make CMakeFiles/learn.dir/build
 .PHONY : learn/fast
 
+home/yardie/Desktop/learn/openGL/3th/glad/src/glad.o: home/yardie/Desktop/learn/openGL/3th/glad/src/glad.c.o
+.PHONY : home/yardie/Desktop/learn/openGL/3th/glad/src/glad.o
+
+# target to build an object file
+home/yardie/Desktop/learn/openGL/3th/glad/src/glad.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/learn.dir/build.make CMakeFiles/learn.dir/home/yardie/Desktop/learn/openGL/3th/glad/src/glad.c.o
+.PHONY : home/yardie/Desktop/learn/openGL/3th/glad/src/glad.c.o
+
+home/yardie/Desktop/learn/openGL/3th/glad/src/glad.i: home/yardie/Desktop/learn/openGL/3th/glad/src/glad.c.i
+.PHONY : home/yardie/Desktop/learn/openGL/3th/glad/src/glad.i
+
+# target to preprocess a source file
+home/yardie/Desktop/learn/openGL/3th/glad/src/glad.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/learn.dir/build.make CMakeFiles/learn.dir/home/yardie/Desktop/learn/openGL/3th/glad/src/glad.c.i
+.PHONY : home/yardie/Desktop/learn/openGL/3th/glad/src/glad.c.i
+
+home/yardie/Desktop/learn/openGL/3th/glad/src/glad.s: home/yardie/Desktop/learn/openGL/3th/glad/src/glad.c.s
+.PHONY : home/yardie/Desktop/learn/openGL/3th/glad/src/glad.s
+
+# target to generate assembly for a file
+home/yardie/Desktop/learn/openGL/3th/glad/src/glad.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/learn.dir/build.make CMakeFiles/learn.dir/home/yardie/Desktop/learn/openGL/3th/glad/src/glad.c.s
+.PHONY : home/yardie/Desktop/learn/openGL/3th/glad/src/glad.c.s
+
 src/test.o: src/test.cpp.o
 .PHONY : src/test.o
 
@@ -162,6 +186,9 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... learn"
+	@echo "... home/yardie/Desktop/learn/openGL/3th/glad/src/glad.o"
+	@echo "... home/yardie/Desktop/learn/openGL/3th/glad/src/glad.i"
+	@echo "... home/yardie/Desktop/learn/openGL/3th/glad/src/glad.s"
 	@echo "... src/test.o"
 	@echo "... src/test.i"
 	@echo "... src/test.s"
