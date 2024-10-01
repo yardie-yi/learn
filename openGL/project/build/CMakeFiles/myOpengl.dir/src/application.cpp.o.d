@@ -1,5 +1,5 @@
-CMakeFiles/myOpengl.dir/src/test.cpp.o: \
- /home/yardie/Desktop/learn/openGL/project/src/test.cpp \
+CMakeFiles/myOpengl.dir/src/application.cpp.o: \
+ /home/yardie/Desktop/learn/openGL/project/src/application.cpp \
  /usr/include/stdc-predef.h \
  /home/yardie/Desktop/learn/openGL/project/../3th/glad/include/glad/glad.h \
  /home/yardie/Desktop/learn/openGL/project/../3th/glad/include/KHR/khrplatform.h \

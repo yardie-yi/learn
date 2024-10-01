@@ -69,19 +69,19 @@ include CMakeFiles/myOpengl.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/myOpengl.dir/flags.make
 
-CMakeFiles/myOpengl.dir/src/test.cpp.o: CMakeFiles/myOpengl.dir/flags.make
-CMakeFiles/myOpengl.dir/src/test.cpp.o: ../src/test.cpp
-CMakeFiles/myOpengl.dir/src/test.cpp.o: CMakeFiles/myOpengl.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/yardie/Desktop/learn/openGL/project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/myOpengl.dir/src/test.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/myOpengl.dir/src/test.cpp.o -MF CMakeFiles/myOpengl.dir/src/test.cpp.o.d -o CMakeFiles/myOpengl.dir/src/test.cpp.o -c /home/yardie/Desktop/learn/openGL/project/src/test.cpp
+CMakeFiles/myOpengl.dir/src/application.cpp.o: CMakeFiles/myOpengl.dir/flags.make
+CMakeFiles/myOpengl.dir/src/application.cpp.o: ../src/application.cpp
+CMakeFiles/myOpengl.dir/src/application.cpp.o: CMakeFiles/myOpengl.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/yardie/Desktop/learn/openGL/project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/myOpengl.dir/src/application.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/myOpengl.dir/src/application.cpp.o -MF CMakeFiles/myOpengl.dir/src/application.cpp.o.d -o CMakeFiles/myOpengl.dir/src/application.cpp.o -c /home/yardie/Desktop/learn/openGL/project/src/application.cpp
 
-CMakeFiles/myOpengl.dir/src/test.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/myOpengl.dir/src/test.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/yardie/Desktop/learn/openGL/project/src/test.cpp > CMakeFiles/myOpengl.dir/src/test.cpp.i
+CMakeFiles/myOpengl.dir/src/application.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/myOpengl.dir/src/application.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/yardie/Desktop/learn/openGL/project/src/application.cpp > CMakeFiles/myOpengl.dir/src/application.cpp.i
 
-CMakeFiles/myOpengl.dir/src/test.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/myOpengl.dir/src/test.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/yardie/Desktop/learn/openGL/project/src/test.cpp -o CMakeFiles/myOpengl.dir/src/test.cpp.s
+CMakeFiles/myOpengl.dir/src/application.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/myOpengl.dir/src/application.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/yardie/Desktop/learn/openGL/project/src/application.cpp -o CMakeFiles/myOpengl.dir/src/application.cpp.s
 
 CMakeFiles/myOpengl.dir/home/yardie/Desktop/learn/openGL/3th/glad/src/glad.c.o: CMakeFiles/myOpengl.dir/flags.make
 CMakeFiles/myOpengl.dir/home/yardie/Desktop/learn/openGL/3th/glad/src/glad.c.o: /home/yardie/Desktop/learn/openGL/3th/glad/src/glad.c
@@ -99,13 +99,13 @@ CMakeFiles/myOpengl.dir/home/yardie/Desktop/learn/openGL/3th/glad/src/glad.c.s: 
 
 # Object files for target myOpengl
 myOpengl_OBJECTS = \
-"CMakeFiles/myOpengl.dir/src/test.cpp.o" \
+"CMakeFiles/myOpengl.dir/src/application.cpp.o" \
 "CMakeFiles/myOpengl.dir/home/yardie/Desktop/learn/openGL/3th/glad/src/glad.c.o"
 
 # External object files for target myOpengl
 myOpengl_EXTERNAL_OBJECTS =
 
-myOpengl: CMakeFiles/myOpengl.dir/src/test.cpp.o
+myOpengl: CMakeFiles/myOpengl.dir/src/application.cpp.o
 myOpengl: CMakeFiles/myOpengl.dir/home/yardie/Desktop/learn/openGL/3th/glad/src/glad.c.o
 myOpengl: CMakeFiles/myOpengl.dir/build.make
 myOpengl: CMakeFiles/myOpengl.dir/link.txt

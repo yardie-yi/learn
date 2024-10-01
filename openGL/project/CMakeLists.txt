@@ -10,6 +10,6 @@ include_directories(${GLFW_INCLUDE} ${GLAD_INCLUDE})
 link_directories(${GLFW_LIB})
 
 
-add_executable(${PROJECT_NAME} ${PROJECT_SOURCE_DIR}/src/test.cpp ${PROJECT_SOURCE_DIR}/../3th/glad/src/glad.c)
+add_executable(${PROJECT_NAME} ${PROJECT_SOURCE_DIR}/src/application.cpp ${PROJECT_SOURCE_DIR}/../3th/glad/src/glad.c)
 target_link_libraries(${PROJECT_NAME} glfw3 GL)
 

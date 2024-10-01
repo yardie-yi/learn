@@ -9,7 +9,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/yardie/Desktop/learn/openGL/3th/glad/src/glad.c" "CMakeFiles/myOpengl.dir/home/yardie/Desktop/learn/openGL/3th/glad/src/glad.c.o" "gcc" "CMakeFiles/myOpengl.dir/home/yardie/Desktop/learn/openGL/3th/glad/src/glad.c.o.d"
-  "/home/yardie/Desktop/learn/openGL/project/src/test.cpp" "CMakeFiles/myOpengl.dir/src/test.cpp.o" "gcc" "CMakeFiles/myOpengl.dir/src/test.cpp.o.d"
+  "/home/yardie/Desktop/learn/openGL/project/src/application.cpp" "CMakeFiles/myOpengl.dir/src/application.cpp.o" "gcc" "CMakeFiles/myOpengl.dir/src/application.cpp.o.d"
   )
 
 # Targets to which this target links.
