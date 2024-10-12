@@ -5,13 +5,13 @@
 # compile CXX with /usr/bin/c++
 C_DEFINES = 
 
-C_INCLUDES = -I/home/yardie/Desktop/learn/openGL/project/../3th/glfw/include -I/home/yardie/Desktop/learn/openGL/project/../3th/glad/include
+C_INCLUDES = -I/home/yardie/Desktop/learn/openGL/project/../3th/glfw/include -I/home/yardie/Desktop/learn/openGL/project/../3th/glad/include -I/home/yardie/Desktop/learn/openGL/project/../3th/img
 
 C_FLAGS = 
 
 CXX_DEFINES = 
 
-CXX_INCLUDES = -I/home/yardie/Desktop/learn/openGL/project/../3th/glfw/include -I/home/yardie/Desktop/learn/openGL/project/../3th/glad/include
+CXX_INCLUDES = -I/home/yardie/Desktop/learn/openGL/project/../3th/glfw/include -I/home/yardie/Desktop/learn/openGL/project/../3th/glad/include -I/home/yardie/Desktop/learn/openGL/project/../3th/img
 
 CXX_FLAGS = 
 

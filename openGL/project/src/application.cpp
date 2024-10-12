@@ -9,6 +9,7 @@
 #include <iostream>
 #include <string.h>
 #include <math.h>
+#include <stb_image.h>
 
 void processInput(GLFWwindow *window)
 {
