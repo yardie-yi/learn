@@ -9,7 +9,13 @@
 #include <iostream>
 #include <string.h>
 #include <math.h>
+
+#define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
+
+#define IMG_PATH1 "/home/yardie/Desktop/learn/openGL/res/container.jpg"
+#define IMG_PATH2 "/home/yardie/Desktop/learn/openGL/res/awesomeface.png"
+
 
 void processInput(GLFWwindow *window)
 {
@@ -52,11 +58,13 @@ int main(void)
     //std::cout << glGetString(GL_VERSION) << std::endl;
 
     /* Loop until the user closes the window */
+
+  
     float vertices[] = {
-         0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 0.0f,
-         0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,
-        -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f,
-        -0.5f,  0.5f, 0.0f, 0.5f, 0.5f, 0.5f
+         0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+         0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
+        -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+        -0.5f,  0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f
     };
 
     unsigned int vao;
@@ -69,11 +77,61 @@ int main(void)
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)0);
     glEnableVertexAttribArray(0);
 
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *)(3*sizeof(float)));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
+
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)(6 * sizeof(float)));
+    glEnableVertexAttribArray(2);
+
+
+  //texture1
+    unsigned int texture1;
+    glGenTextures(1, &texture1);
+    glBindTexture(GL_TEXTURE_2D, texture1);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    int width, height, nrChannels;
+    stbi_set_flip_vertically_on_load(true);
+    unsigned char *data = stbi_load(IMG_PATH1, &width, &height, &nrChannels, 0);
+    if (data)
+    {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+    }
+    else
+    {
+        std::cout << "failed to load texture" << std::endl;
+    }
+    stbi_image_free(data);
+
+    //texture2
+    unsigned int texture2;
+    glGenTextures(1, &texture2);
+    glBindTexture(GL_TEXTURE_2D, texture2);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    stbi_set_flip_vertically_on_load(true);
+    data = stbi_load(IMG_PATH2, &width, &height, &nrChannels, 0);
+    if (data)
+    {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+    }
+    else
+    {
+        std::cout << "failed to load texture" << std::endl;
+    }
+    stbi_image_free(data);
+
 
     unsigned int indices[] = {
         0, 1, 3,
@@ -91,12 +149,15 @@ int main(void)
     "#version 330 core\n"
     "layout (location = 0) in vec3 aPos;\n"
     "layout (location = 1) in vec3 aColor;\n"
-    "out vec3 vertexColor;\n"
+    "layout (location = 2) in vec2 aTexCoord;\n"
+    "out vec3 ourColor;\n"
+    "out vec2 TexCoord;\n"
     "void main()\n"
     "{\n"
     "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-    //"   vertexColor = vec4(0.5, 0.0, 0.0, 1.0);\n"
-    "   vertexColor = aColor;"
+    //"   ourColor = vec4(0.5, 0.0, 0.0, 1.0);\n"
+    "   ourColor = aColor;\n"
+    "   TexCoord = aTexCoord;\n"
     "}\n";
 
     unsigned int vertexShader;
@@ -117,13 +178,17 @@ int main(void)
     const char *fragmentShaderSoure =
     "#version 330 core\n"
     "out vec4 FragColor;\n"
-    "in vec3 vertexColor;\n"
+    "in vec3 ourColor;\n"
+    "in vec2 TexCoord;\n"
+    "uniform sampler2D ourTexture1;\n"
+    "uniform sampler2D ourTexture2;\n"
     //"uniform vec4 ourColor;"
     "void main()\n"
     "{\n"
     //"   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
-    "   FragColor = vec4(vertexColor, 1.0);\n"
+    //"   FragColor = vec4(ourColor, 1.0);\n"
     //"   FragColor = ourColor;\n"
+    "   FragColor = mix(texture(ourTexture1, TexCoord), texture(ourTexture2, TexCoord), 0.2);\n"
     "}\n";
 
 
@@ -155,6 +220,8 @@ int main(void)
     }
 
     glUseProgram(shaderProgram);
+    glUniform1i(glGetUniformLocation(shaderProgram, "ourTexture1"), 0);
+    glUniform1i(glGetUniformLocation(shaderProgram, "ourTexture2"), 1);
 
     while (!glfwWindowShouldClose(window))
     {
@@ -177,7 +244,13 @@ int main(void)
         // int vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
         // glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
 
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, texture1);
 
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, texture2);
+
+        glUseProgram(shaderProgram);
         glBindVertexArray(vao);
         //glDrawArrays(GL_TRIANGLES, 0, 3);
 
