@@ -6,8 +6,9 @@ set(GLFW_INCLUDE  ${PROJECT_SOURCE_DIR}/../3th/glfw/include)
 set(GLFW_LIB ${PROJECT_SOURCE_DIR}/../3th/glfw/lib) 
 set(GLAD_INCLUDE ${PROJECT_SOURCE_DIR}/../3th/glad/include)
 set(IMAGE_INCLUDE ${PROJECT_SOURCE_DIR}/../3th/img)
+set(GLM_INCLUDE ${PROJECT_SOURCE_DIR}/../3th/glm)
 
-include_directories(${GLFW_INCLUDE} ${GLAD_INCLUDE} ${IMAGE_INCLUDE})
+include_directories(${GLFW_INCLUDE} ${GLAD_INCLUDE} ${IMAGE_INCLUDE} ${GLM_INCLUDE})
 link_directories(${GLFW_LIB})
 
 

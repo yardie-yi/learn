@@ -13,6 +13,10 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 #define IMG_PATH1 "/home/yardie/Desktop/learn/openGL/res/container.jpg"
 #define IMG_PATH2 "/home/yardie/Desktop/learn/openGL/res/awesomeface.png"
 
@@ -152,12 +156,15 @@ int main(void)
     "layout (location = 2) in vec2 aTexCoord;\n"
     "out vec3 ourColor;\n"
     "out vec2 TexCoord;\n"
+    "uniform mat4 transform;\n"
     "void main()\n"
     "{\n"
-    "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
+    //"   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
+    "   gl_Position = transform * vec4(aPos.x, aPos.y, aPos.z, 1.0f);\n"
     //"   ourColor = vec4(0.5, 0.0, 0.0, 1.0);\n"
     "   ourColor = aColor;\n"
     "   TexCoord = aTexCoord;\n"
+    //"   TexCoord = vec2(aTexCoord.x, 1.0 - aTexCoord.y);\n"
     "}\n";
 
     unsigned int vertexShader;
@@ -223,6 +230,8 @@ int main(void)
     glUniform1i(glGetUniformLocation(shaderProgram, "ourTexture1"), 0);
     glUniform1i(glGetUniformLocation(shaderProgram, "ourTexture2"), 1);
 
+
+
     while (!glfwWindowShouldClose(window))
     {
         processInput(window);
@@ -253,6 +262,17 @@ int main(void)
         glUseProgram(shaderProgram);
         glBindVertexArray(vao);
         //glDrawArrays(GL_TRIANGLES, 0, 3);
+
+        //glm
+        glm::mat4 trans = glm::mat4(1.0f);
+        trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.0f));
+        trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(0.0, 0.0, 1.0));
+        trans = glm::scale(trans, glm::vec3(0.5, 0.5, 0.5));
+
+        glUseProgram(shaderProgram);
+        unsigned int transformLoc = glGetUniformLocation(shaderProgram, "transform");
+        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
+
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
