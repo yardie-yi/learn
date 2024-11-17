@@ -16,9 +16,13 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include "common.h"
+
 
 #define IMG_PATH1 "/home/yardie/Desktop/learn/openGL/res/container.jpg"
 #define IMG_PATH2 "/home/yardie/Desktop/learn/openGL/res/awesomeface.png"
+#define VERTEXT_SHADER_PATH "/home/yardie/Desktop/learn/openGL/res/shaderSource/testv.shader"
+#define FRAMGENT_SHADER_PATH "/home/yardie/Desktop/learn/openGL/res/shaderSource/testf.shader"
 
 glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
 glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
@@ -274,6 +278,8 @@ int main(void)
 
 
     //vertexShader
+    const char *vertexShaderSoure = File::GetInstance().readFile(VERTEXT_SHADER_PATH).c_str();
+    #if 0
     const char *vertexShaderSoure =
     "#version 330 core\n"
     "layout (location = 0) in vec3 aPos;\n"
@@ -295,7 +301,7 @@ int main(void)
     "   TexCoord = aTexCoord;\n"
     //"   TexCoord = vec2(aTexCoord.x, 1.0 - aTexCoord.y);\n"
     "}\n";
-
+#endif
     unsigned int vertexShader;
     vertexShader = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vertexShader, 1, &vertexShaderSoure, NULL);
@@ -311,7 +317,10 @@ int main(void)
     }
 
     //fragmentShader
-    const char *fragmentShaderSoure =
+    const char *fragmentShaderSoure = File::GetInstance().readFile(FRAMGENT_SHADER_PATH).c_str();
+
+#if 0
+const char *fragmentShaderSoure = 
     "#version 330 core\n"
     "out vec4 FragColor;\n"
     //"in vec3 ourColor;\n"
@@ -326,7 +335,7 @@ int main(void)
     //"   FragColor = ourColor;\n"
     "   FragColor = mix(texture(ourTexture1, TexCoord), texture(ourTexture2, TexCoord), 0.2);\n"
     "}\n";
-
+#endif
 
     unsigned int fragmentShader;
     fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);

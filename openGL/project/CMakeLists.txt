@@ -11,7 +11,12 @@ set(GLM_INCLUDE ${PROJECT_SOURCE_DIR}/../3th/glm)
 include_directories(${GLFW_INCLUDE} ${GLAD_INCLUDE} ${IMAGE_INCLUDE} ${GLM_INCLUDE})
 link_directories(${GLFW_LIB})
 
+AUX_SOURCE_DIRECTORY(${PROJECT_SOURCE_DIR}/src/ DIR_SRCS)
+AUX_SOURCE_DIRECTORY(${PROJECT_SOURCE_DIR}/../3th/glad/src/ DIR_SRCS)
 
-add_executable(${PROJECT_NAME} ${PROJECT_SOURCE_DIR}/src/application.cpp ${PROJECT_SOURCE_DIR}/../3th/glad/src/glad.c)
+set(TEST_MATH ${DIR_SRCS})
+
+add_executable(${PROJECT_NAME} ${TEST_MATH})
+
 target_link_libraries(${PROJECT_NAME} glfw3 GL)
 
