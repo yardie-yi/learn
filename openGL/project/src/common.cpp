@@ -15,7 +15,7 @@ std::string File::readFile(const std::string &fileName)
     std::string line;
     while(getline(file, line))
     {
-        ss << line << "\n";
+        ss << line << '\n';
         std::cout << line << std::endl;
     }
     return ss.str();

@@ -13,16 +13,19 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
+//#include <glm/glm.hpp>
+//#include <glm/gtc/matrix_transform.hpp>
+//#include <glm/gtc/type_ptr.hpp>
+#include <glm.hpp>
+#include <gtc/matrix_transform.hpp>
+#include <gtc/type_ptr.hpp>
 #include "common.h"
 
 
 #define IMG_PATH1 "/home/yardie/Desktop/learn/openGL/res/container.jpg"
 #define IMG_PATH2 "/home/yardie/Desktop/learn/openGL/res/awesomeface.png"
-#define VERTEXT_SHADER_PATH "/home/yardie/Desktop/learn/openGL/res/shaderSource/testv.shader"
-#define FRAMGENT_SHADER_PATH "/home/yardie/Desktop/learn/openGL/res/shaderSource/testf.shader"
+#define VERTEXT_SHADER_PATH "/home/yardie/Desktop/learn/openGL/res/shaderSource/testv.glsl"
+#define FRAMGENT_SHADER_PATH "/home/yardie/Desktop/learn/openGL/res/shaderSource/testf.glsl"
 
 glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
 glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
@@ -278,7 +281,10 @@ int main(void)
 
 
     //vertexShader
-    const char *vertexShaderSoure = File::GetInstance().readFile(VERTEXT_SHADER_PATH).c_str();
+    //const char *vertexShaderSoure = File::GetInstance().readFile(VERTEXT_SHADER_PATH).c_str();
+    std::string vertexShaderSoureS = File::GetInstance().readFile(VERTEXT_SHADER_PATH);
+    //std::cout << "Vertex Shader Source:\n" << vertexShaderSoureS << std::endl;
+    const char *vertexShaderSoure = vertexShaderSoureS.c_str(); 
     #if 0
     const char *vertexShaderSoure =
     "#version 330 core\n"
@@ -317,8 +323,10 @@ int main(void)
     }
 
     //fragmentShader
-    const char *fragmentShaderSoure = File::GetInstance().readFile(FRAMGENT_SHADER_PATH).c_str();
+    //const char *fragmentShaderSoure = File::GetInstance().readFile(FRAMGENT_SHADER_PATH).c_str();
+    std::string fragmentShaderSoureS = File::GetInstance().readFile(FRAMGENT_SHADER_PATH);
 
+    const char *fragmentShaderSoure = fragmentShaderSoureS.c_str();
 #if 0
 const char *fragmentShaderSoure = 
     "#version 330 core\n"
